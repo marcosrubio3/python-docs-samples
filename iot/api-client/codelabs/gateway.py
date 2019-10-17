@@ -28,13 +28,12 @@ import paho.mqtt.client as mqtt
 # Hostname of '' means using the IP address of the machine.
 HOST = ''
 PORT = 10000
-BUFF_SIZE = 2048
+BUFF_SIZE = 1024
 ADDR = (HOST, PORT)
 
-udpSerSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-udpSerSock.setblocking(False)
+udpSerSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 udpSerSock.bind(ADDR)
-
+udpSerSock.listen()
 
 class GatewayState:
     # This is the topic that the device will receive configuration updates on.
@@ -290,7 +289,15 @@ def main():
             continue
 
         try:
-            data, client_addr = udpSerSock.recvfrom(BUFF_SIZE)
+            conn, client_addr = udpSerSock.accept()
+            with conn:
+                print('Connected by', client_addr)
+                while True:
+                    data = conn.recv(BUFF_SIZE)
+                    if not data:
+                        break
+                    conn.sendall(data)
+                    
         except socket.error:
             continue
         print('[{}]: From Address {}:{} receive data: {}'.format(
