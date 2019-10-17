@@ -22,12 +22,12 @@ PORT = 10000
 BUFF_SIZE = 4096
 device_id = None
 server_address = (ADDR, PORT)
-# Create a UDP socket
-client_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
+# Create a TCP socket
+client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_sock.connect((ADDR, PORT))
 
 def send_command(sock, message):
-    sock.sendto(message.encode(), server_address)
+    sock.sendall(message.encode(), server_address)
 
     # Receive response
     print('Waiting for response.....')
