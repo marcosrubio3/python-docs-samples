@@ -24,10 +24,10 @@ device_id = None
 server_address = (ADDR, PORT)
 # Create a TCP socket
 client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_sock.connect((ADDR, PORT))
+client_sock.connect(server_address)
 
 def send_command(sock, message):
-    sock.sendall(message.encode(), server_address)
+    sock.sendall(message.encode())
 
     # Receive response
     print('Waiting for response.....')
